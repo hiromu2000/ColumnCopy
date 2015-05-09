@@ -195,7 +195,7 @@
         row.push(that.getCellText(this));
       });
 
-      values.push(row.join(that.options.columnSeperator));
+      values.push(row);
     });
 
     return values;
@@ -273,7 +273,7 @@
     // Ping the background.html page, this is where the clipboard
     // communication happens
     // See: http://stackoverflow.com/a/8807145/806988
-    chrome.extension.sendMessage({ toCopy: values.join(this.options.rowSeparator) });
+    chrome.extension.sendMessage({ toCopy: values });
   };
 
   // Expose for testing
