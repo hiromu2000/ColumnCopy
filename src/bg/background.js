@@ -14,6 +14,17 @@ function openDB(){
 function insertData(url, rows){ 
     var m = url.match(/^https?:\/\/([^/]+)/);
     var tablename = m[1].replace(/\./g, '_');
+    if (url.search(/mufg/) != -1){
+        tablename = 'bk_mufg_jp';
+    } else if (url.search(/mizuhobank/) != -1){
+        tablename = 'mizuhobank_co_jp';
+    } else if (url.search(/ib\.surugabank/) != -1){
+        tablename = 'ib_surugabank_co_jp';
+    } else if (url.search(/card\.surugabank/) != -1){
+        tablename = 'card_surugabank_co_jp';
+    } else if (url.search(/saisoncard/) != -1){
+        tablename = 'saisoncard_co_jp';
+    }
     var db = openDB(); 
     db.transaction( 
         function(trans){ 
@@ -23,7 +34,7 @@ function insertData(url, rows){
                 + ' (date DATE NOT NULL,'
                 + ' name TEXT NOT NULL,' 
                 + ' memo TEXT,'
-                + ' amount INTEGER NOT NULL);' 
+                + ' amount INTEGER NOT NULL);'
             );
             for (var i = 1; i < rows.length; i++){
                 var row = rows[i];
@@ -66,7 +77,7 @@ function insertData(url, rows){
                     }
                     var name = row[3];
                     var memo = "";
-                } else if (url.search(/surugabank/) != -1){
+                } else if (url.search(/ib\.surugabank/) != -1){
                     if (row.length != 6){
                         continue;
                     }
@@ -86,6 +97,37 @@ function insertData(url, rows){
                     }
                     var name = row[3];
                     var memo = "";
+                } else if (url.search(/card\.surugabank/) != -1){
+                    if (row.length != 7){
+                        continue;
+                    }
+                    var re2 = /(\d+)年\s*(\d+)月\s*(\d+)日/;
+                    var m = re2.exec(row[1]);
+                    var year = m[1];
+                    var month = m[2];
+                    var day = m[3];
+                    // Zero-padding
+                    month = ( "0" + month ).slice( -2 );
+                    day = ( "0" + day ).slice( -2 );
+                    var date = year + "-" + month + "-" + day;
+
+                    var name = row[2];
+                    var amount = parseInt(row[3].replace(/[,\s円]/g, ''));
+                    if (row[0].search(/ご利用/) != -1){
+                        amount *= -1;
+                    }
+                    var memo = '';
+                } else if (url.search(/saisoncard/) != -1){
+                    var re2 = /(\d+)\/(\d+)\/(\d+)/;
+                    var m = re2.exec(row[0]);
+                    var year = m[1];
+                    var month = m[2];
+                    var day = m[3];
+                    var date = year + "-" + month + "-" + day;
+                    var name = row[1];
+                    var memo = '';
+                    var amount = parseInt(row[4].replace(/[,\s円]/g, ''));
+                    amount *= -1;
                 }
                 trans.executeSql('INSERT INTO '
                     + tablename
