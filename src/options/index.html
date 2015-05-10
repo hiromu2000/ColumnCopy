@@ -8,6 +8,7 @@
     <title>ColumnCopy Options</title>
 
     <link rel="stylesheet" href="options.css">
+    <link rel="stylesheet" type="text/css" href="jquery.dataTables.css">
   </head>
 
   <body>
@@ -15,7 +16,29 @@
     <div id="container">
       <img id="icon" src="../../icons/icon48.png" alt="ColumnCopy icon">
       <h1>ColumnCopy</h1>
+          <legend>Table1</legend>
+                        <table id="example" class="display" cellspacing="0" width="100%">
+                                <thead>
+                                        <tr>
+                                                <th>Date</th>
+                                                <th>Name</th>
+                                                <th>Memo</th>
+                                                <th>Amount</th>
+                                        </tr>
+                                </thead>
 
+                                <tfoot>
+                                        <tr>
+                                                <th>Date</th>
+                                                <th>Name</th>
+                                                <th>Memo</th>
+                                                <th>Amount</th>
+                                        </tr>
+                                </tfoot>
+
+                                <tbody>
+                                </tbody>
+                        </table>
       <form>
         <fieldset>
           <legend>Keyboard shortcuts</legend>
@@ -58,8 +81,11 @@
       </form>
     </div>
 
-    <script src="../../js/jquery/jquery.min.js"></script>
+    <script src="../../js/jquery/jquery.1.11.3.js"></script>
+    <!-- This does not work with jQuery v.1.11.3
     <script src="../../js/jquery.hotkeys/jquery.hotkeys.js"></script>
+    -->
+    <script src="../../js/jquery/jquery.dataTables.js"></script>
     <script src="../shared/shared.js"></script>
     <script src="options.js"></script>
   </body>

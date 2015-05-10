@@ -1,4 +1,39 @@
+var dbName = 'Trans';
+var version = '1.0';
+var displayName = 'Trans';
+var estimatedSize = 65536;
+function openDB(){ 
+    return openDatabase( 
+        dbName, 
+        version, 
+        displayName, 
+        estimatedSize
+    ); 
+}
+function getData(t){ 
+    var db = openDB();
+    db.transaction( 
+        function(trans){
+            trans.executeSql(
+                'SELECT * FROM mizuhobank_co_jp;',
+                [],
+                function(trans, r){
+                    for(var i=0; i<r.rows.length; i++){
+                        t.row.add( [
+                            r.rows.item(i).date,
+                            r.rows.item(i).name,
+                            r.rows.item(i).memo,
+                            r.rows.item(i).amount
+                        ] ).draw();
+                    }
+                } 
+            );
+        }
+    );
+}
 jQuery(function ($) {
+  var t = $('#example').DataTable();
+  dataSet = getData(t);
 
   var $focusedInput,
       options = getOptions();
