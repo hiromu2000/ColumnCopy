@@ -15,15 +15,18 @@ function getData(t){
     db.transaction( 
         function(trans){
             trans.executeSql(
-                'SELECT * FROM mizuhobank_co_jp;',
+                'select t.date as date, t.name as name, t.memo as memo, t.amount as amount, a.name as account_name'
+                + ' from trans as t,accounts as a where t.account_id == a.account_id;',
                 [],
                 function(trans, r){
                     for(var i=0; i<r.rows.length; i++){
+                        var tmp = r.rows.item(i);
                         t.row.add( [
                             r.rows.item(i).date,
                             r.rows.item(i).name,
                             r.rows.item(i).memo,
-                            r.rows.item(i).amount
+                            r.rows.item(i).amount,
+                            r.rows.item(i).account_name
                         ] ).draw();
                     }
                 } 
@@ -32,7 +35,22 @@ function getData(t){
     );
 }
 jQuery(function ($) {
-  var t = $('#example').DataTable();
+    // Setup - add a text input to each footer cell
+    $('#example tfoot th').each( function () {
+        var title = $('#example thead th').eq( $(this).index() ).text();
+        $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+    } );
+    var t = $('#example').DataTable();
+    // Apply the search
+    t.columns().every( function () {
+        var that = this;
+ 
+        $( 'input', this.footer() ).on( 'keyup change', function () {
+            that
+                .search( this.value )
+                .draw();
+        } );
+    } );
   dataSet = getData(t);
 
   var $focusedInput,
