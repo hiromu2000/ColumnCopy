@@ -13,28 +13,43 @@ function openDB(){
 }
 function insertData(url, rows){ 
     var m = url.match(/^https?:\/\/([^/]+)/);
+    var account_id = 99;
     var tablename = m[1].replace(/\./g, '_');
     if (url.search(/mufg/) != -1){
+        account_id = 1;
         tablename = 'bk_mufg_jp';
     } else if (url.search(/mizuhobank/) != -1){
+        account_id = 2;
         tablename = 'mizuhobank_co_jp';
     } else if (url.search(/ib\.surugabank/) != -1){
+        account_id = 3;
         tablename = 'ib_surugabank_co_jp';
     } else if (url.search(/card\.surugabank/) != -1){
+        account_id = 4;
         tablename = 'card_surugabank_co_jp';
     } else if (url.search(/saisoncard/) != -1){
+        account_id = 5;
         tablename = 'saisoncard_co_jp';
     }
     var db = openDB(); 
     db.transaction( 
         function(trans){ 
             trans.executeSql(
-                'CREATE TABLE IF NOT EXISTS '
-                + tablename 
+                'CREATE TABLE IF NOT EXISTS accounts'
+                + ' (account_id INTEGER PRIMARY KEY,'
+                + ' name TEXT NOT NULL);'
+            );
+            trans.executeSql(
+                'INSERT INTO accounts (account_id, name) VALUES (?, ?)'
+                , [account_id, tablename]
+            );
+            trans.executeSql(
+                'CREATE TABLE IF NOT EXISTS trans'
                 + ' (date DATE NOT NULL,'
                 + ' name TEXT NOT NULL,' 
                 + ' memo TEXT,'
-                + ' amount INTEGER NOT NULL);'
+                + ' amount INTEGER NOT NULL,'
+                + ' account_id INTEGER NOT NULL);'
             );
             for (var i = 1; i < rows.length; i++){
                 var row = rows[i];
@@ -129,10 +144,10 @@ function insertData(url, rows){
                     var amount = parseInt(row[4].replace(/[,\s円]/g, ''));
                     amount *= -1;
                 }
-                trans.executeSql('INSERT INTO '
-                    + tablename
-                    + ' (date, name, memo, amount) ' 
-                    + 'VALUES (?, ?, ?, ?)', [date, name, memo, amount]);
+                trans.executeSql('INSERT INTO trans'
+                    + ' (date, name, memo, amount, account_id) ' 
+                    + 'VALUES (?, ?, ?, ?, ?)',
+                    [date, name, memo, amount, account_id]);
             } 
         }
     );
