@@ -12,6 +12,13 @@ function openDB(){
     ); 
 }
 function insertData(url, rows){ 
+    /*
+    $.getScript( "test.js", function(script, url) {
+        var hoge = test( url );
+        alert(hoge.msg);
+    }
+    );
+    */
     var m = url.match(/^https?:\/\/([^/]+)/);
     var account_id = 99;
     var tablename = m[1].replace(/\./g, '_');
@@ -51,106 +58,33 @@ function insertData(url, rows){
                 + ' amount INTEGER NOT NULL,'
                 + ' account_id INTEGER NOT NULL);'
             );
-            for (var i = 1; i < rows.length; i++){
-                var row = rows[i];
-                if (url.search(/mufg/) != -1){
-                    // var re = new RegExp("(\d+)年(\d+)月(\d+)日");
-                    // var match = re.exec(row[0]);
-                    var re2 = /(\d+)年(\d+)月(\d+)日/;
-                    var m = re2.exec(row[0]);
-                    var year = m[1];
-                    var month = m[2];
-                    var day = m[3];
-                    // Zero-padding
-                    month = ( "0" + month ).slice( -2 );
-                    day = ( "0" + day ).slice( -2 );
-                    var date = year + "-" + month + "-" + day;
-
-                    if (row[1].search(/円/) != -1) {
-                        var m = /([\d,]+)円/.exec(row[1]);
-                        var amount = parseInt(m[1].replace(',', '')) * -1;
-                    } else {
-                        var m = /([\d,]+)円/.exec(row[2]);
-                        var amount = parseInt(m[1].replace(',', ''));
-                    }
-                    var name = row[3];
-                    var memo = row[5];
-                } else if (url.search(/mizuhobank/) != -1){
-                    var re2 = /(\d+)\.(\d+)\.(\d+)/;
-                    var m = re2.exec(row[0]);
-                    var year = m[1];
-                    var month = m[2];
-                    var day = m[3];
-                    var date = year + "-" + month + "-" + day;
-
-                    if (row[1].search(/円/) != -1) {
-                        var m = /([\d,]+)\s円/.exec(row[1]);
-                        var amount = parseInt(m[1].replace(/[,\s]/g, '')) * -1;
-                    } else {
-                        var m = /([\d,]+)\s円/.exec(row[2]);
-                        var amount = parseInt(m[1].replace(/[,\s]/g, ''));
-                    }
-                    var name = row[3];
-                    var memo = "";
-                } else if (url.search(/ib\.surugabank/) != -1){
-                    if (row.length != 6){
-                        continue;
-                    }
-                    var re2 = /(\d+)\/(\d+)\/(\d+)/;
-                    var m = re2.exec(row[0]);
-                    var year = m[1];
-                    var month = m[2];
-                    var day = m[3];
-                    var date = year + "-" + month + "-" + day;
-
-                    if (row[1].search(/円/) != -1) {
-                        var m = /([\d,]+)円/.exec(row[1]);
-                        var amount = parseInt(m[1].replace(/,/g, '')) * -1;
-                    } else {
-                        var m = /([\d,]+)円/.exec(row[2]);
-                        var amount = parseInt(m[1].replace(/,/g, ''));
-                    }
-                    var name = row[3];
-                    var memo = "";
-                } else if (url.search(/card\.surugabank/) != -1){
-                    if (row.length != 7){
-                        continue;
-                    }
-                    var re2 = /(\d+)年\s*(\d+)月\s*(\d+)日/;
-                    var m = re2.exec(row[1]);
-                    var year = m[1];
-                    var month = m[2];
-                    var day = m[3];
-                    // Zero-padding
-                    month = ( "0" + month ).slice( -2 );
-                    day = ( "0" + day ).slice( -2 );
-                    var date = year + "-" + month + "-" + day;
-
-                    var name = row[2];
-                    var amount = parseInt(row[3].replace(/[,\s円]/g, ''));
-                    if (row[0].search(/ご利用/) != -1){
-                        amount *= -1;
-                    }
-                    var memo = '';
-                } else if (url.search(/saisoncard/) != -1){
-                    var re2 = /(\d+)\/(\d+)\/(\d+)/;
-                    var m = re2.exec(row[0]);
-                    var year = m[1];
-                    var month = m[2];
-                    var day = m[3];
-                    var date = year + "-" + month + "-" + day;
-                    var name = row[1];
-                    var memo = '';
-                    var amount = parseInt(row[4].replace(/[,\s円]/g, ''));
-                    amount *= -1;
-                }
-                trans.executeSql('INSERT INTO trans'
-                    + ' (date, name, memo, amount, account_id) ' 
-                    + 'VALUES (?, ?, ?, ?, ?)',
-                    [date, name, memo, amount, account_id]);
-            } 
         }
     );
+    if (url.search(/mufg/) != -1){
+        $.getScript( "mufg.js", function() {
+            parse( rows, db, account_id );
+        });
+    } else if (url.search(/mizuhobank/) != -1){
+        $.getScript( "mizuhobank.js", function() {
+            parse( rows, db, account_id );
+        });
+    } else if (url.search(/ib\.surugabank/) != -1){
+        $.getScript( "ib_surugabank.js", function() {
+            parse( rows, db, account_id );
+        });
+    } else if (url.search(/card\.surugabank/) != -1){
+        $.getScript( "card_surugabank.js", function() {
+            parse( rows, db, account_id );
+        });
+    } else if (url.search(/saisoncard/) != -1){
+        $.getScript( "saisoncard.js", function() {
+            parse( rows, db, account_id );
+        });
+    } else {
+        $.getScript( "localhost.js", function() {
+            parse( rows, db, account_id );
+        });
+    }
 } 
 
 var contexts = {

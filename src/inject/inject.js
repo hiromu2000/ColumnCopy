@@ -110,7 +110,7 @@
       this.copyValuesToClipboard(this.getValuesForTable($table));
     }
 
-    chrome.extension.sendMessage({ gaTrackEvent: 'copyTable' });
+    // chrome.extension.sendMessage({ gaTrackEvent: 'copyTable' });
   };
 
   ColumnCopy.prototype.copyColumnContainingCell = function (cell, $table) {
@@ -121,7 +121,7 @@
       this.copyValuesToClipboard(data.values);
     }
 
-    chrome.extension.sendMessage({ gaTrackEvent: 'copyColumn' });
+    // chrome.extension.sendMessage({ gaTrackEvent: 'copyColumn' });
   };
 
   ColumnCopy.prototype.getColumnContainingCell = function (cell, $table) {
