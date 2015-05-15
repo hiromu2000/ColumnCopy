@@ -20,23 +20,31 @@ function insertData(url, rows){
     );
     */
     var m = url.match(/^https?:\/\/([^/]+)/);
-    var account_id = 99;
-    var tablename = m[1].replace(/\./g, '_');
+    var account_id, tablename, script;
     if (url.search(/mufg/) != -1){
         account_id = 1;
         tablename = 'bk_mufg_jp';
+        script = 'mufg.js';
     } else if (url.search(/mizuhobank/) != -1){
         account_id = 2;
         tablename = 'mizuhobank_co_jp';
+        script = 'mizuhobank.js';
     } else if (url.search(/ib\.surugabank/) != -1){
         account_id = 3;
         tablename = 'ib_surugabank_co_jp';
+        script = 'ib_surugabank.js';
     } else if (url.search(/card\.surugabank/) != -1){
         account_id = 4;
         tablename = 'card_surugabank_co_jp';
+        script = 'card_surugabank.js';
     } else if (url.search(/saisoncard/) != -1){
         account_id = 5;
         tablename = 'saisoncard_co_jp';
+        script = 'saisoncard.js';
+    } else {
+        account_id = 99;
+        tablename = m[1].replace(/\./g, '_');
+        script = 'localhost.js';
     }
     var db = openDB(); 
     db.transaction( 
@@ -60,31 +68,9 @@ function insertData(url, rows){
             );
         }
     );
-    if (url.search(/mufg/) != -1){
-        $.getScript( "mufg.js", function() {
-            parse( rows, db, account_id );
-        });
-    } else if (url.search(/mizuhobank/) != -1){
-        $.getScript( "mizuhobank.js", function() {
-            parse( rows, db, account_id );
-        });
-    } else if (url.search(/ib\.surugabank/) != -1){
-        $.getScript( "ib_surugabank.js", function() {
-            parse( rows, db, account_id );
-        });
-    } else if (url.search(/card\.surugabank/) != -1){
-        $.getScript( "card_surugabank.js", function() {
-            parse( rows, db, account_id );
-        });
-    } else if (url.search(/saisoncard/) != -1){
-        $.getScript( "saisoncard.js", function() {
-            parse( rows, db, account_id );
-        });
-    } else {
-        $.getScript( "localhost.js", function() {
-            parse( rows, db, account_id );
-        });
-    }
+    $.getScript( script, function() {
+        parse( rows, db, account_id );
+    });
 } 
 
 var contexts = {
