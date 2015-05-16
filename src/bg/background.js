@@ -32,24 +32,6 @@ function createAccount() {
 
 function insertData(url, rows){ 
     chrome.runtime.getPackageDirectoryEntry(function(root) {
-        /*
-        root.getFile("/crxfs/src/translators/localhost.js", {create: false}, function(fileEntry) {
-            fileEntry.file(function(file) {
-                var reader = new FileReader();
-                reader.onloadend = function(e) {
-                    var m = /{[\S\s]*?}/.exec(this.result);
-                    var metadata = JSON.parse(m[0]);
-                    var re = new RegExp(metadata.target);
-                    if (re.test(url)) {
-                        alert(file.name + ' matched');
-                    } else {
-                        alert('not matched');
-                    }
-                };
-                var text = reader.readAsText(file);
-            });
-        });
-        */
         root.getDirectory("/crxfs/src/translators/", {create: false}, function(dirEntry) {
             var dirReader = dirEntry.createReader();
             var readEntries = function() {
