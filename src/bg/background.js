@@ -13,7 +13,7 @@ function openDB(){
     ); 
 }
 
-function createAccount() {
+function registerAccount() {
     var db = openDB(); 
     db.transaction( 
         function(tx){ 
@@ -24,7 +24,7 @@ function createAccount() {
             );
             tx.executeSql(
                 'INSERT INTO accounts (account_id, name) VALUES (?, ?)'
-                , [account_id, tablename]
+                , [account_id, account_name]
             );
         }
     );
@@ -51,13 +51,13 @@ function insertData(url, rows){
                                         if (re.test(url)) {
                                             script = file.name;
                                             account_id = metadata.account_id;
-                                            tablename = metadata.tablename;
-                                            createAccount();
+                                            account_name = metadata.account_name;
+                                            registerAccount();
                                             translate(rows);
                                         }
                                     }
                                 };
-                                var text = reader.readAsText(file);
+                                reader.readAsText(file);
                             });
                         }
                         readEntries();
