@@ -2,7 +2,7 @@
 {
     "target": "^https://netanswerplus\\.saisoncard\\.co\\.jp",
     "account_id": 5,
-    "tablename": "saisoncard_co_jp"
+    "account_name": "saisoncard_co_jp"
 }
 */
 

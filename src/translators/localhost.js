@@ -2,7 +2,7 @@
 {
     "target": "^http://localhost",
     "account_id": 99,
-    "tablename": "localhost"
+    "account_name": "localhost"
 }
 */
 
