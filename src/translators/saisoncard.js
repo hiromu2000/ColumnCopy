@@ -1,3 +1,11 @@
+/*
+{
+    "target": "^https://netanswerplus\\.saisoncard\\.co\\.jp",
+    "account_id": 5,
+    "tablename": "saisoncard_co_jp"
+}
+*/
+
 function parse(rows) {
     var trans = []; 
     for (var i = 1; i < rows.length; i++) {

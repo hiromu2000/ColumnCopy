@@ -1,3 +1,11 @@
+/*
+{
+    "target": "^https://card\\.surugabank\\.co\\.jp",
+    "account_id": 4,
+    "tablename": "card_surugabank_co_jp"
+}
+*/
+
 function parse(rows) {
     var trans = []; 
     for (var i = 1; i < rows.length; i++) {
