@@ -1,3 +1,11 @@
+/*
+{
+    "target": "^http://localhost",
+    "account_id": 99,
+    "tablename": "localhost"
+}
+*/
+
 function parse(rows) {
     var trans = [];
     for (var i = 1; i < rows.length; i++) {

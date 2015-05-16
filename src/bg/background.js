@@ -3,6 +3,7 @@ var dbName = 'Trans';
 var version = '1.0';
 var displayName = 'Trans';
 var estimatedSize = 65536;
+
 function openDB(){ 
     return openDatabase( 
         dbName, 
@@ -11,67 +12,95 @@ function openDB(){
         estimatedSize
     ); 
 }
-function insertData(url, rows){ 
-    /*
-    $.getScript( "test.js", function(script, url) {
-        var hoge = test( url );
-        alert(hoge.msg);
-    }
-    );
-    */
-    var m = url.match(/^https?:\/\/([^/]+)/);
-    var account_id, tablename, script;
-    if (url.search(/mufg/) != -1){
-        account_id = 1;
-        tablename = 'bk_mufg_jp';
-        script = 'mufg.js';
-    } else if (url.search(/mizuhobank/) != -1){
-        account_id = 2;
-        tablename = 'mizuhobank_co_jp';
-        script = 'mizuhobank.js';
-    } else if (url.search(/ib\.surugabank/) != -1){
-        account_id = 3;
-        tablename = 'ib_surugabank_co_jp';
-        script = 'ib_surugabank.js';
-    } else if (url.search(/card\.surugabank/) != -1){
-        account_id = 4;
-        tablename = 'card_surugabank_co_jp';
-        script = 'card_surugabank.js';
-    } else if (url.search(/saisoncard/) != -1){
-        account_id = 5;
-        tablename = 'saisoncard_co_jp';
-        script = 'saisoncard.js';
-    } else {
-        account_id = 99;
-        tablename = m[1].replace(/\./g, '_');
-        script = 'localhost.js';
-    }
+
+function createAccount() {
     var db = openDB(); 
     db.transaction( 
-        function(trans){ 
-            trans.executeSql(
+        function(tx){ 
+            tx.executeSql(
                 'CREATE TABLE IF NOT EXISTS accounts'
                 + ' (account_id INTEGER PRIMARY KEY,'
                 + ' name TEXT NOT NULL);'
             );
-            trans.executeSql(
+            tx.executeSql(
                 'INSERT INTO accounts (account_id, name) VALUES (?, ?)'
                 , [account_id, tablename]
             );
-            trans.executeSql(
-                'CREATE TABLE IF NOT EXISTS trans'
-                + ' (date DATE NOT NULL,'
-                + ' name TEXT NOT NULL,' 
-                + ' memo TEXT,'
-                + ' amount INTEGER NOT NULL,'
-                + ' account_id INTEGER NOT NULL);'
-            );
         }
     );
-    $.getScript( script, function() {
+}
+
+function insertData(url, rows){ 
+    chrome.runtime.getPackageDirectoryEntry(function(root) {
+        /*
+        root.getFile("/crxfs/src/translators/localhost.js", {create: false}, function(fileEntry) {
+            fileEntry.file(function(file) {
+                var reader = new FileReader();
+                reader.onloadend = function(e) {
+                    var m = /{[\S\s]*?}/.exec(this.result);
+                    var metadata = JSON.parse(m[0]);
+                    var re = new RegExp(metadata.target);
+                    if (re.test(url)) {
+                        alert(file.name + ' matched');
+                    } else {
+                        alert('not matched');
+                    }
+                };
+                var text = reader.readAsText(file);
+            });
+        });
+        */
+        root.getDirectory("/crxfs/src/translators/", {create: false}, function(dirEntry) {
+            var dirReader = dirEntry.createReader();
+            var readEntries = function() {
+                dirReader.readEntries (function(results) {
+                    if (!results.length) {
+                        return;
+                    } else {
+                        for (var i = 0; i < results.length; i++){
+                            var fileEntry = results[i];
+                            fileEntry.file(function(file) {
+                                var reader = new FileReader();
+                                reader.onloadend = function(e) {
+                                    if (/^[\/]/.test(this.result)) {
+                                        var m = /{[\S\s]*?}/.exec(this.result);
+                                        var metadata = JSON.parse(m[0]);
+                                        var re = new RegExp(metadata.target);
+                                        if (re.test(url)) {
+                                            script = file.name;
+                                            account_id = metadata.account_id;
+                                            tablename = metadata.tablename;
+                                            createAccount();
+                                            translate(rows);
+                                        }
+                                    }
+                                };
+                                var text = reader.readAsText(file);
+                            });
+                        }
+                        readEntries();
+                    }
+                });
+            };
+            readEntries();
+        });
+    });
+}
+
+function translate(rows) {
+    var db = openDB(); 
+    $.getScript( '../translators/' + script, function() {
         var trans = parse(rows);
         db.transaction( 
             function(tx){ 
+                tx.executeSql(
+                    'CREATE TABLE IF NOT EXISTS trans'
+                    + ' (date DATE NOT NULL,'
+                    + ' name TEXT NOT NULL,' 
+                    + ' memo TEXT,'
+                    + ' amount INTEGER NOT NULL,'
+                    + ' account_id INTEGER NOT NULL);'
+                );
                 for (var i = 0; i < trans.length; i++) {
                     var tran = trans[i];
                     tx.executeSql('INSERT INTO trans'
@@ -83,7 +112,7 @@ function insertData(url, rows){
             }
         );
     });
-} 
+}
 
 var contexts = {
     /*

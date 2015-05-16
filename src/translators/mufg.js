@@ -1,3 +1,11 @@
+/*
+{
+    "target": "^https://direct11\\.bk\\.mufg\\.jp",
+    "account_id": 1,
+    "tablename": "bk_mufg_jp"
+}
+*/
+
 function parse(rows) {
     var trans = [];
     for (var i = 1; i < rows.length; i++) {
