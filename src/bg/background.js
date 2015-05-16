@@ -69,18 +69,32 @@ function insertData(url, rows){
         }
     );
     $.getScript( script, function() {
-        parse( rows, db, account_id );
+        var trans = parse(rows);
+        db.transaction( 
+            function(tx){ 
+                for (var i = 0; i < trans.length; i++) {
+                    var tran = trans[i];
+                    tx.executeSql('INSERT INTO trans'
+                        + ' (date, name, memo, amount, account_id) ' 
+                        + 'VALUES (?, ?, ?, ?, ?);'
+                        , [tran.date, tran.name, tran.memo, tran.amount, account_id]
+                    );
+                }
+            }
+        );
     });
 } 
 
 var contexts = {
+    /*
       copyColumn: chrome.contextMenus.create({
         'title': 'Copy this column',
         'contexts': ['all'],
         'onclick': handleContextMenuClick
       }),
+      */
       copyTable: chrome.contextMenus.create({
-        'title': 'Copy entire table',
+        'title': 'Copy transaction table',
         'contexts': ['all'],
         'onclick': handleContextMenuClick
       }),
