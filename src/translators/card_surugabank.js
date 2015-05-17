@@ -1,7 +1,6 @@
 /*
 {
     "target": "^https://card\\.surugabank\\.co\\.jp",
-    "account_id": 4,
     "account_name": "card_surugabank_co_jp"
 }
 */
