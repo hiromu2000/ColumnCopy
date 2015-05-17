@@ -1,7 +1,6 @@
 /*
 {
     "target": "^http://localhost",
-    "account_id": 99,
     "account_name": "localhost"
 }
 */

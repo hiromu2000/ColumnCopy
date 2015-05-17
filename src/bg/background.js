@@ -13,18 +13,18 @@ function openDB(){
     ); 
 }
 
-function registerAccount() {
+function registerAccount(account_name) {
     var db = openDB(); 
     db.transaction( 
         function(tx){ 
             tx.executeSql(
                 'CREATE TABLE IF NOT EXISTS accounts'
-                + ' (account_id INTEGER PRIMARY KEY,'
+                + ' (account_id INTEGER PRIMARY KEY AUTOINCREMENT,'
                 + ' name TEXT NOT NULL);'
             );
             tx.executeSql(
-                'INSERT INTO accounts (account_id, name) VALUES (?, ?)'
-                , [account_id, account_name]
+                'INSERT INTO accounts (name) VALUES (?)'
+                , [account_name]
             );
         }
     );
@@ -49,11 +49,11 @@ function insertData(url, rows){
                                         var metadata = JSON.parse(m[0]);
                                         var re = new RegExp(metadata.target);
                                         if (re.test(url)) {
-                                            script = file.name;
-                                            account_id = metadata.account_id;
-                                            account_name = metadata.account_name;
-                                            registerAccount();
-                                            translate(rows);
+                                            var script = file.name;
+                                            var account_id = metadata.account_id;
+                                            var account_name = metadata.account_name;
+                                            registerAccount(account_name);
+                                            translate(rows, script, account_name);
                                         }
                                     }
                                 };
@@ -69,28 +69,36 @@ function insertData(url, rows){
     });
 }
 
-function translate(rows) {
+function translate(rows, script, account_name) {
     var db = openDB(); 
     $.getScript( '../translators/' + script, function() {
         var trans = parse(rows);
-        db.transaction( 
+        db.transaction(
             function(tx){ 
                 tx.executeSql(
-                    'CREATE TABLE IF NOT EXISTS trans'
-                    + ' (date DATE NOT NULL,'
-                    + ' name TEXT NOT NULL,' 
-                    + ' memo TEXT,'
-                    + ' amount INTEGER NOT NULL,'
-                    + ' account_id INTEGER NOT NULL);'
+                    'SELECT * FROM accounts where name="'
+                    + account_name
+                    + '";', [], function(tx, result){
+                        var row = result.rows.item(0);
+                        var account_id = row.account_id;
+                        tx.executeSql(
+                            'CREATE TABLE IF NOT EXISTS trans'
+                            + ' (date DATE NOT NULL,'
+                            + ' name TEXT NOT NULL,' 
+                            + ' memo TEXT,'
+                            + ' amount INTEGER NOT NULL,'
+                            + ' account_id INTEGER NOT NULL);'
+                        );
+                        for (var i = 0; i < trans.length; i++) {
+                            var tran = trans[i];
+                            tx.executeSql('INSERT INTO trans'
+                                + ' (date, name, memo, amount, account_id) ' 
+                                + 'VALUES (?, ?, ?, ?, ?);'
+                                , [tran.date, tran.name, tran.memo, tran.amount, account_id]
+                            );
+                        }
+                    }
                 );
-                for (var i = 0; i < trans.length; i++) {
-                    var tran = trans[i];
-                    tx.executeSql('INSERT INTO trans'
-                        + ' (date, name, memo, amount, account_id) ' 
-                        + 'VALUES (?, ?, ?, ?, ?);'
-                        , [tran.date, tran.name, tran.memo, tran.amount, account_id]
-                    );
-                }
             }
         );
     });

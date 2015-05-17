@@ -1,7 +1,6 @@
 /*
 {
     "target": "^https://ib\\.surugabank\\.co\\.jp",
-    "account_id": 3,
     "account_name": "ib_surugabank_co_jp"
 }
 */

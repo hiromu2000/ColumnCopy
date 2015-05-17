@@ -1,7 +1,6 @@
 /*
 {
     "target": "^https://direct11\\.bk\\.mufg\\.jp",
-    "account_id": 1,
     "account_name": "bk_mufg_jp"
 }
 */
