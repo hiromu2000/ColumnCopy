@@ -53,7 +53,7 @@ function insertData(url, rows){
                                             var account_id = metadata.account_id;
                                             var account_name = metadata.account_name;
                                             registerAccount(account_name);
-                                            translate(rows, script, account_name);
+                                            translate(rows, script, metadata);
                                         }
                                     }
                                 };
@@ -69,10 +69,37 @@ function insertData(url, rows){
     });
 }
 
-function translate(rows, script, account_name) {
-    var db = openDB(); 
-    $.getScript( '../../translators/' + script, function() {
-        var trans = parse(rows);
+function translate(rows, script, metadata) {
+    var account_name = metadata.account_name;
+    if (metadata.custom) {
+        $.getScript( '../../translators/' + script, function() {
+            var trans = parse(rows);
+            insert(trans, account_name);
+        });
+    } else {
+        var trans = parse(rows, metadata);
+        insert(trans, account_name);
+    }
+}
+
+function parse(rows, metadata) {
+    var trans = [];
+    for (var i = 1; i < rows.length; i++) {
+        var row = rows[i];
+        var date = moment(row[metadata.column_date], metadata.date_format).format('YYYY-MM-DD');
+        var name = row[metadata.column_name];
+        var memo = '';
+        if (metadata.column_memo != null) memo = row[metadata.column_memo];
+        var re = new RegExp(metadata.amount_separator, "g");
+        var amount = parseInt(row[metadata.column_amount].replace(re, ''));
+        if (metadata.amount_negate) amount *= -1;
+        trans.push({date: date, name: name, memo: memo, amount: amount});
+    }
+    return trans;
+}
+
+function insert (trans, account_name) {
+        var db = openDB(); 
         db.transaction(
             function(tx){ 
                 tx.executeSql(
@@ -101,7 +128,6 @@ function translate(rows, script, account_name) {
                 );
             }
         );
-    });
 }
 
 var contexts = {

@@ -1,7 +1,8 @@
 /*
 {
     "target": "https://web[0-9]\\.ib\\.mizuhobank\\.co\\.jp",
-    "account_name": "mizuhobank_co_jp"
+    "account_name": "mizuhobank_co_jp",
+    "custom": true
 }
 */
 
