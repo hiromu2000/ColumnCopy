@@ -32,7 +32,7 @@ function registerAccount(account_name) {
 
 function insertData(url, rows){ 
     chrome.runtime.getPackageDirectoryEntry(function(root) {
-        root.getDirectory("/crxfs/src/translators/", {create: false}, function(dirEntry) {
+        root.getDirectory("/crxfs/translators/", {create: false}, function(dirEntry) {
             var dirReader = dirEntry.createReader();
             var readEntries = function() {
                 dirReader.readEntries (function(results) {
@@ -71,7 +71,7 @@ function insertData(url, rows){
 
 function translate(rows, script, account_name) {
     var db = openDB(); 
-    $.getScript( '../translators/' + script, function() {
+    $.getScript( '../../translators/' + script, function() {
         var trans = parse(rows);
         db.transaction(
             function(tx){ 
