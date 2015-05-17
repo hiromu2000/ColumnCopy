@@ -10,12 +10,7 @@ function parse(rows) {
     for (var i = 1; i < rows.length; i++) {
         var row = rows[i];
         if (row.length != 6) continue;
-        var re2 = /(\d+)\/(\d+)\/(\d+)/;
-        var m = re2.exec(row[0]);
-        var year = m[1];
-        var month = m[2];
-        var day = m[3];
-        var date = year + "-" + month + "-" + day;
+        var date = moment(row[0], "YYYY/MM/DD").format('YYYY-MM-DD');
 
         if (row[1].search(/円/) != -1) {
             var m = /([\d,]+)円/.exec(row[1]);
