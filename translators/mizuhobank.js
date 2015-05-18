@@ -6,7 +6,7 @@
 }
 */
 
-function parse(rows) {
+function parse(rows, metadata) {
     var trans = [];
     for (var i = 1; i < rows.length; i++) {            
         var row = rows[i];
