@@ -15,10 +15,15 @@ function parse(rows, metadata) {
         var memo = '';
         if (metadata.column_memo != null) memo = row[metadata.column_memo];
         var re = new RegExp(metadata.amount_separator, "g");
-        var amount = row[metadata.column_amount];
-        amount = amount.replace(re, '');
-        amount = parseInt(amount);
-        if (metadata.amount_negate) amount *= -1;
+        var amount;
+        if (metadata.column_deposit != null && row[metadata.column_deposit].search(/\d+/) != -1) {
+            amount = row[metadata.column_deposit];
+            amount = parseInt(amount.replace(re, ''));
+        } else {
+            amount = row[metadata.column_withdraw];
+            amount = parseInt(amount.replace(re, ''));
+            amount *= -1;
+        }
         trans.push({date: date, name: name, memo: memo, amount: amount});
     }
     return trans;
