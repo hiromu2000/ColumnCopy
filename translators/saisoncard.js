@@ -7,8 +7,8 @@
     "column_date": 0,
     "column_name": 1,
     "column_memo": null,
-    "column_amount": 4,
-    "amount_separator": "[^-0-9]",
-    "amount_negate": true
+    "column_deposit": null,
+    "column_withdraw": 4,
+    "amount_separator": "[^-0-9]"
 }
 */
