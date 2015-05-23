@@ -142,11 +142,6 @@ function handleContextMenuClick(info, tab) {
 
 chrome.extension.onMessage.addListener(function(message, sender, sendResponse) {
   if (message.toCopy) {
-    var textarea = document.getElementById("clipboardBridge");
-    textarea.value = message.toCopy;
-    textarea.focus();
-    textarea.select();
-    document.execCommand('copy');
     insertData(sender.url, message.toCopy);
   }
   else if (message.gaTrackEvent) {
