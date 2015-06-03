@@ -45,8 +45,8 @@ function insertData(url, rows){
                                 var reader = new FileReader();
                                 reader.onloadend = function(e) {
                                     if (/^[\/]/.test(this.result)) {
-                                        var m = /{[\S\s]*?}/.exec(this.result);
-                                        var metadata = JSON.parse(m[0]);
+                                        var m = /\/\*([\S\s]*?)\*\//.exec(this.result);
+                                        var metadata = JSON.parse(m[1]);
                                         var re = new RegExp(metadata.target);
                                         if (re.test(url)) {
                                             var script = file.name;
