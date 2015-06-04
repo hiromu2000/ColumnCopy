@@ -36,4 +36,5 @@ describe('Tests', function() {
     forEach('bk_mufg_jp');
     forEach('mizuhobank_co_jp');
     forEach('saisoncard_co_jp');
+    forEach('card_surugabank_co_jp');
 });
