@@ -1,6 +1,6 @@
 /*
 {
-    "target": "^https://netanswerplus\\.saisoncard\\.co\\.jp",
+    "target": "^https://netanswerplus\\.saisoncard\\.co\\.jp|test_saisoncard_co_jp\\.html$",
     "account_name": "saisoncard_co_jp",
     "custom": false,
     "date_format": "YYYY/MM/DD",
