@@ -11,7 +11,7 @@ function parse(rows, metadata) {
     for (var i = 1; i < rows.length; i++) {
         var row = rows[i];
         var date = moment(row[metadata.column_date], metadata.date_format).format('YYYY-MM-DD');
-        var name = row[metadata.column_name];
+        var name = row[metadata.column_name].trim();
         var memo = '';
         if (metadata.column_memo != null) memo = row[metadata.column_memo];
         var re = new RegExp(metadata.amount_separator, "g");
