@@ -4,7 +4,7 @@ describe('Tests', function() {
         var rows;
         var metadata;
         var spec;
-        beforeEach(function(done) {
+        beforeEach(function() {
             jasmine.getFixtures().fixturesPath = '../translators';
             var fixture = readFixtures(translatorName + '.js');
             var m = /\/\*([\S\s]*?)\*\//.exec(fixture);
@@ -24,19 +24,13 @@ describe('Tests', function() {
             var $table = $('table:first');
             var _ColumnCopy = new ColumnCopy();
             rows = _ColumnCopy.getValuesForTable($table);
-            $.getScript(script, function() {
-                trans = parse(rows, metadata);
-                done();
-            });
+            trans = parse(rows, metadata);
         });
         it('Translator check for ' + translatorName, function() {
-            expect(trans).toEqual(spec.trans);
+            for (var i = 0; i < trans.length; i++) {
+                expect(trans[i]).toEqual(spec.trans[i]);
+            }
         });
     }
-    forEach('bk_mufg_jp');
-    forEach('mizuhobank_co_jp');
-    forEach('saisoncard_co_jp');
-    forEach('card_surugabank_co_jp');
-    forEach('ib_surugabank_co_jp');
     forEach('mufgcard_com');
 });
