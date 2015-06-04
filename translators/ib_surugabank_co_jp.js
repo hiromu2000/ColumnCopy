@@ -20,7 +20,7 @@ function parse(rows, metadata) {
             var m = /([\d,]+)円/.exec(row[2]);
             var amount = parseInt(m[1].replace(/,/g, ''));
         }
-        var name = row[3];
+        var name = row[3].trim();
         var memo = "";
         trans.push({date: date, name: name, memo: memo, amount: amount});
     }   
