@@ -49,11 +49,10 @@ function insertData(url, rows){
                                         var metadata = JSON.parse(m[1]);
                                         var re = new RegExp(metadata.target);
                                         if (re.test(url)) {
-                                            var script = file.name;
                                             var account_id = metadata.account_id;
                                             var account_name = metadata.account_name;
                                             registerAccount(account_name);
-                                            translate(rows, script, metadata);
+                                            translate(rows, metadata);
                                         }
                                     }
                                 };
@@ -69,7 +68,8 @@ function insertData(url, rows){
     });
 }
 
-function translate(rows, script, metadata) {
+function translate(rows, metadata) {
+    var script = metadata.account_name + ".js";
     var account_name = metadata.account_name;
     if (metadata.custom) {
         script = '../../translators/' + script;
