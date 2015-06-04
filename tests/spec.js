@@ -37,4 +37,5 @@ describe('Tests', function() {
     forEach('mizuhobank_co_jp');
     forEach('saisoncard_co_jp');
     forEach('card_surugabank_co_jp');
+    forEach('ib_surugabank_co_jp');
 });
