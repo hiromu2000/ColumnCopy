@@ -13,7 +13,7 @@ function parse(rows, metadata) {
         var date = moment(row[metadata.column_date], metadata.date_format).format('YYYY-MM-DD');
         var name = row[metadata.column_name].trim();
         var memo = '';
-        if (metadata.column_memo != null) memo = row[metadata.column_memo];
+        if (metadata.column_memo != null) memo = row[metadata.column_memo].trim();
         var re = new RegExp(metadata.amount_separator, "g");
         var amount;
         if (metadata.column_deposit != null && row[metadata.column_deposit].search(/\d+/) != -1) {
