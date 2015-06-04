@@ -3,6 +3,7 @@ describe('Tests', function() {
         var trans;
         var rows;
         var metadata;
+        var spec;
         beforeEach(function(done) {
             jasmine.getFixtures().fixturesPath = '../translators';
             var fixture = readFixtures(translatorName + '.js');
@@ -16,7 +17,10 @@ describe('Tests', function() {
                 script = '../translators/default.js';
             }
             jasmine.getFixtures().fixturesPath = './';
-            loadFixtures('test_' + translatorName + '.html');
+            fixture = readFixtures('test_' + translatorName + '.html');
+            setFixtures(fixture);
+            m = /<!--([\S\s]*?)-->/.exec(fixture);
+            spec = JSON.parse(m[1]);
             var $table = $('table:first');
             var _ColumnCopy = new ColumnCopy();
             rows = _ColumnCopy.getValuesForTable($table);
@@ -25,14 +29,8 @@ describe('Tests', function() {
                 done();
             });
         });
-        // Now this just checks the length of rows.
-        // I tried to check each element of rows one by one, 
-        // but couldn't figure out how to allow test.rows to include &nbsp;, which could appear in rows.
-        it('Scraper check for ' + translatorName, function() {
-            expect(rows.length).toBe(metadata.test.rows.length);
-        });
         it('Translator check for ' + translatorName, function() {
-            expect(trans).toEqual(metadata.test.trans);
+            expect(trans).toEqual(spec.trans);
         });
     }
     forEach('bk_mufg_jp');
