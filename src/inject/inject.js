@@ -1,3 +1,4 @@
+var ColumnCopy;
 /*jslint browser: true, nomen: true, plusplus: true, todo: true, white: true, indent: 2 */
 (function (window, document, $) {
   'use strict';
@@ -5,7 +6,7 @@
   /**
    * The ColumnCopy function object.
    */
-  function ColumnCopy() {
+  ColumnCopy = function () {
     var that = this;
 
     chrome.extension.sendRequest({ method: 'getOptions' }, function(response) {

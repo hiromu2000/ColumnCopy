@@ -23,6 +23,7 @@ describe('Tests', function() {
             spec = JSON.parse(m[1]);
             var $table = $('table:first');
             var _ColumnCopy = new ColumnCopy();
+            _ColumnCopy.options = {hyperlinkMode: 'off'};
             rows = _ColumnCopy.getValuesForTable($table);
             $.getScript(script, function() {
                 trans = parse(rows, metadata);
