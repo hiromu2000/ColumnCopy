@@ -36,7 +36,7 @@ Contributions, especially translators, are welcomed.
 Please feel free to make a pull request.
 
 ## Test
-# Jasmine + PhantomJS (headless testing)
+### Jasmine + PhantomJS (headless testing)
 1. Install/build PhantomJS
 2. Run this following command:
 
@@ -44,7 +44,7 @@ Please feel free to make a pull request.
 $ phantomjs tests/lib/run-jasmine.js tests/SpecRunner.html
 ```
 
-# Jasmine + Browser + Web Server
+### Jasmine + Browser + Web Server
 1. Host this repository in your preferred web server (e.g., Apache HTTP Server, Ngix).
 2. Open http://localhost/TransactionTableCopy/tests/SpecRunner.html in your preferred browser.
 
