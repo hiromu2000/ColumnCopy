@@ -40,7 +40,14 @@ jQuery(function ($) {
         var title = $('#example thead th').eq( $(this).index() ).text();
         $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
     } );
-    var t = $('#example').DataTable();
+    var t = $('#example').DataTable({
+        dom: 'T<"clear">lfrtip',
+        tableTools: {
+            "sSwfPath": "../../js/jquery/copy_csv_xls.swf",
+            "aButtons": ["copy", "csv", "xls", "print", "select_all", "select_none"],
+            "sRowSelect": "multi"
+        }
+    });
     // Apply the search
     t.columns().every( function () {
         var that = this;
