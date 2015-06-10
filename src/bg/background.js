@@ -142,6 +142,9 @@ function handleContextMenuClick(info, tab) {
 
 chrome.extension.onMessage.addListener(function(message, sender, sendResponse) {
   if (message.toCopy) {
+    for (var i = 0; i < message.toCopy.length; i++) {
+      message.toCopy[i] = message.toCopy[i].split('\t');
+    }
     insertData(sender.url, message.toCopy);
   }
   else if (message.gaTrackEvent) {

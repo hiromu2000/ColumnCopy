@@ -1,4 +1,3 @@
-var ColumnCopy;
 /*jslint browser: true, nomen: true, plusplus: true, todo: true, white: true, indent: 2 */
 (function (window, document, $) {
   'use strict';
@@ -6,7 +5,7 @@ var ColumnCopy;
   /**
    * The ColumnCopy function object.
    */
-  ColumnCopy = function () {
+  function ColumnCopy() {
     var that = this;
 
     chrome.extension.sendRequest({ method: 'getOptions' }, function(response) {
@@ -156,7 +155,7 @@ var ColumnCopy;
         }
       });
 
-      values.push(row.join(that.options.columnSeperator));
+      values.push(row.join(that.options.columnSeparator));
     });
 
     return { column: $(column), values: values };
@@ -196,7 +195,7 @@ var ColumnCopy;
         row.push(that.getCellText(this));
       });
 
-      values.push(row);
+      values.push(row.join(that.options.columnSeparator));
     });
 
     return values;

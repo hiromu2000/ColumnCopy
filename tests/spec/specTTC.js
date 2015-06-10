@@ -1,27 +1,5 @@
-describe('Tests for ColumnCopy', function() {
-    function forEach(fixtureName) {
-        var rows;
-        var spec;
-        beforeEach(function() {
-            jasmine.getFixtures().fixturesPath = './';
-            var fixture = readFixtures(fixtureName);
-            setFixtures(fixture);
-            var m = /<!--([\S\s]*?)-->/.exec(fixture);
-            spec = JSON.parse(m[1]);
-            var $table = $('table:first');
-            var _ColumnCopy = new ColumnCopy();
-            _ColumnCopy.options = {hyperlinkMode: 'off'};
-            rows = _ColumnCopy.getValuesForTable($table);
-        });
-        it('Translator check for ' + fixtureName, function() {
-            expect(rows).toEqual(spec.rows);
-        });
-    }
-    forEach('test1.html');
-});
-
-describe('Tests for TransactionTableCopy', function() {
-    function forEach(translatorName) {
+describe('TransactionTableCopy', function() {
+    function runTest(translatorName) {
         var trans;
         var rows;
         var metadata;
@@ -45,8 +23,14 @@ describe('Tests for TransactionTableCopy', function() {
             spec = JSON.parse(m[1]);
             var $table = $('table:first');
             var _ColumnCopy = new ColumnCopy();
-            _ColumnCopy.options = {hyperlinkMode: 'off'};
+            _ColumnCopy.options = {
+                hyperlinkMode: 'off',
+                columnSeparator: '\t'    
+            };
             rows = _ColumnCopy.getValuesForTable($table);
+            for (var i = 0; i < rows.length; i++) {
+              rows[i] = rows[i].split('\t');
+            }
             $.getScript(script, function() {
                 trans = parse(rows, metadata);
                 done();
@@ -56,10 +40,10 @@ describe('Tests for TransactionTableCopy', function() {
             expect(trans).toEqual(spec.trans);
         });
     }
-    forEach('bk_mufg_jp');
-    forEach('mizuhobank_co_jp');
-    forEach('saisoncard_co_jp');
-    forEach('card_surugabank_co_jp');
-    forEach('ib_surugabank_co_jp');
-    forEach('mufgcard_com');
+    runTest('bk_mufg_jp');
+    runTest('mizuhobank_co_jp');
+    runTest('saisoncard_co_jp');
+    runTest('card_surugabank_co_jp');
+    runTest('ib_surugabank_co_jp');
+    runTest('mufgcard_com');
 });
