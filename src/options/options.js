@@ -40,7 +40,12 @@ jQuery(function ($) {
         var title = $('#example thead th').eq( $(this).index() ).text();
         $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
     } );
-    var t = $('#example').DataTable();
+    var t = $('#example').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv'
+        ]
+    });
     // Apply the search
     t.columns().every( function () {
         var that = this;
